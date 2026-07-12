@@ -6,10 +6,10 @@ export const bookingService = {
     if (vErr) throw vErr;
 
     if (!vehicle.available_for.includes('rental')) {
-      throw { message: 'This vehicle is not available for rental' };
+      throw new Error('This vehicle is not available for rental');
     }
     if (vehicle.status !== 'Available') {
-      throw { message: 'Vehicle is not currently available' };
+      throw new Error('Vehicle is not currently available');
     }
 
     const { data: isAvailable, error: availErr } = await supabase.rpc('check_vehicle_availability', {
@@ -18,7 +18,7 @@ export const bookingService = {
       p_return: rentalDetails.returnDate
     });
     if (availErr) throw availErr;
-    if (!isAvailable) throw { message: 'Vehicle is not available for the selected dates' };
+    if (!isAvailable) throw new Error('Vehicle is not available for the selected dates');
 
     const pickup = new Date(rentalDetails.pickupDate);
     const ret = new Date(rentalDetails.returnDate);
