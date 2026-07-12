@@ -6,10 +6,10 @@ export const authService = {
     if (error) throw error;
 
     const profile = await authService.getProfile(data.user.id);
-    if (!profile) throw { message: 'No staff profile found for this account' };
+    if (!profile) throw new Error('No staff profile found for this account');
     if (!profile.is_active) {
       await supabase.auth.signOut();
-      throw { message: 'Your account has been deactivated. Please contact an administrator.' };
+      throw new Error('Your account has been deactivated. Please contact an administrator.');
     }
 
     await supabase.from('admin_profiles').update({ last_login: new Date().toISOString() }).eq('id', data.user.id);
@@ -80,4 +80,4 @@ export const authService = {
     const { error } = await supabase.from('admin_profiles').delete().eq('id', id);
     if (error) throw error;
   }
-};
+};     
